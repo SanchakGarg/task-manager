@@ -1,8 +1,14 @@
 {
+  "buildCommand": "cd ../.. && bun run build --filter=@taskmanager/web",
+  "installCommand": "cd ../.. && bun install",
+  "outputDirectory": ".next",
   "crons": [
     {
       "path": "/api/cron/reminders",
       "schedule": "* * * * *"
     }
-  ]
+  ],
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
 }
