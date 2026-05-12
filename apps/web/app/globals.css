@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 55 100% 97%;
+    --foreground: 0 0% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 19 90% 47%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 68% 57%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 55 20% 93%;
+    --muted-foreground: 0 0% 43%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 4%;
+    --input: 55 20% 93%;
+    --ring: 19 90% 47%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 240 10% 8%;
+    --foreground: 55 20% 95%;
+    --card: 240 10% 12%;
+    --card-foreground: 55 20% 95%;
+    --popover: 240 10% 12%;
+    --popover-foreground: 55 20% 95%;
+    --primary: 19 90% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 68% 62%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 10% 18%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 72% 56%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 55 20% 85%;
+    --input: 240 10% 18%;
+    --ring: 19 90% 52%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-nb-bg text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .nb-card {
+    @apply bg-white border-2 border-nb-border rounded-nb shadow-nb transition-all duration-200;
+  }
+
+  .nb-card-hover {
+    @apply nb-card hover:shadow-nb-hover hover:-translate-y-0.5 hover:-translate-x-0.5;
+  }
+
+  .nb-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-nb border-2 border-nb-border font-bold
+           shadow-nb transition-all duration-150 active:translate-x-1 active:translate-y-1 active:shadow-none
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .nb-btn-primary {
+    @apply nb-btn bg-nb-primary text-white hover:bg-nb-primary-hover hover:shadow-nb-hover hover:-translate-x-0.5 hover:-translate-y-0.5;
+  }
+
+  .nb-btn-secondary {
+    @apply nb-btn bg-nb-secondary text-white hover:opacity-90 hover:shadow-nb-hover hover:-translate-x-0.5 hover:-translate-y-0.5;
+  }
+
+  .nb-btn-accent {
+    @apply nb-btn bg-nb-accent text-nb-border hover:opacity-90 hover:shadow-nb-hover hover:-translate-x-0.5 hover:-translate-y-0.5;
+  }
+
+  .nb-btn-ghost {
+    @apply nb-btn bg-transparent hover:bg-muted shadow-none border-transparent;
+  }
+
+  .nb-btn-outline {
+    @apply nb-btn bg-white text-nb-border hover:bg-muted hover:shadow-nb-hover hover:-translate-x-0.5 hover:-translate-y-0.5;
+  }
+
+  .nb-input {
+    @apply w-full rounded-nb border-2 border-nb-border bg-white px-4 py-2.5 font-medium
+           placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring
+           transition-shadow duration-150 focus:shadow-nb;
+  }
+
+  .nb-badge {
+    @apply inline-flex items-center gap-1 rounded-full border-2 border-nb-border px-2.5 py-0.5 text-xs font-bold shadow-nb-sm;
+  }
+
+  .nb-tag {
+    @apply inline-flex items-center rounded-md border border-nb-border bg-white px-2 py-0.5 text-xs font-semibold;
+  }
+
+  .stagger-children > * {
+    @apply animate-slide-up;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 360ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { @apply bg-muted rounded-full; }
+::-webkit-scrollbar-thumb { @apply bg-nb-border rounded-full border-2 border-muted; }
+::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground; }
+
+/* Drag and drop */
+.dragging { @apply opacity-60 scale-105 rotate-1; }
+.drag-over { @apply ring-2 ring-nb-primary ring-offset-2; }
