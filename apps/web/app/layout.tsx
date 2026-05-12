@@ -3,6 +3,7 @@ import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -53,22 +54,25 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </head>
       <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}>
-        <SessionProvider>
-          {children}
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                border: "2px solid #0A0A0A",
-                borderRadius: "12px",
-                boxShadow: "4px 4px 0px #0A0A0A",
-                fontFamily: "var(--font-space-grotesk)",
-                fontWeight: 600,
-              },
-            }}
-          />
-        </SessionProvider>
+        <ThemeProvider>
+          <SessionProvider>
+            {children}
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: "hsl(var(--card))",
+                  color: "hsl(var(--card-foreground))",
+                  border: "2px solid hsl(var(--border))",
+                  borderRadius: "12px",
+                  boxShadow: "4px 4px 0px #0A0A0A",
+                  fontFamily: "var(--font-space-grotesk)",
+                  fontWeight: 600,
+                },
+              }}
+            />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

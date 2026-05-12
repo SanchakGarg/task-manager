@@ -24,10 +24,10 @@ const COLUMNS: { status: TaskStatus; emoji: string }[] = [
 
 type ViewMode = "board" | "list";
 
-export function TaskBoard() {
+export function TaskBoard({ defaultView = "board" }: { defaultView?: ViewMode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<ViewMode>("board");
+  const [viewMode, setViewMode] = useState<ViewMode>(defaultView);
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [formOpen, setFormOpen] = useState(false);

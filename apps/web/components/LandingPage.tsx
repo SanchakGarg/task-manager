@@ -1,12 +1,14 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Zap, CheckCircle2, Bell, FileText, Upload, Smartphone,
-  Monitor, Globe, ArrowRight, Star
+  Monitor, Globe, ArrowRight, Star, Play, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const features = [
   {
@@ -58,6 +60,7 @@ const itemVariants = {
 };
 
 export function LandingPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-nb-bg overflow-x-hidden">
       {/* Nav */}
@@ -69,9 +72,15 @@ export function LandingPage() {
           <span className="text-xl font-black tracking-tight">TaskFlow</span>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
-            Sign In
+          <Button variant="ghost" onClick={() => router.push("/dashboard")}>
+            Try Demo
           </Button>
+          <Link href="/download">
+            <Button variant="outline">
+              <Download size={14} />
+              Download
+            </Button>
+          </Link>
           <Button onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
             Get Started Free
           </Button>
@@ -108,6 +117,15 @@ export function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="xl"
+              variant="accent"
+              onClick={() => router.push("/dashboard")}
+              className="gap-3 text-base text-nb-border"
+            >
+              <Play size={18} />
+              Try Demo — No Login
+            </Button>
+            <Button
+              size="xl"
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               className="gap-3 text-base"
             >
@@ -117,7 +135,7 @@ export function LandingPage() {
                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Continue with Google
+              Sign in with Google
               <ArrowRight size={18} />
             </Button>
             <div className="flex items-center gap-2 text-sm text-muted-foreground font-semibold">
@@ -192,6 +210,39 @@ export function LandingPage() {
             </motion.div>
           ))}
         </motion.div>
+      </section>
+
+      {/* Download */}
+      <section className="max-w-5xl mx-auto px-6 pb-24">
+        <div className="nb-card p-10 bg-nb-primary text-white border-nb-border shadow-nb-xl">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div>
+              <h2 className="text-3xl font-black mb-2">Available everywhere</h2>
+              <p className="opacity-90 font-medium">
+                Windows, macOS, Linux, and Android. One account, all your devices.
+              </p>
+              <div className="flex gap-3 mt-4 flex-wrap">
+                {["Windows", "macOS", "Linux", "Android"].map((p) => (
+                  <span key={p} className="inline-flex items-center gap-1 bg-white/20 border border-white/30 rounded-full px-3 py-1 text-sm font-bold">
+                    {p}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+              <Link href="/download">
+                <Button size="lg" variant="accent" className="gap-2 text-nb-border">
+                  <Download size={18} />
+                  Download Apps
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline" onClick={() => router.push("/dashboard")}
+                className="bg-transparent text-white border-white hover:bg-white hover:text-nb-primary">
+                Open Web App
+              </Button>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* CTA */}

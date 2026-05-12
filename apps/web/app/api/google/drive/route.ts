@@ -6,7 +6,28 @@ import { uploadFileToDrive } from "@/lib/google";
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    let fileName = "demo-file.txt";
+    let fileMime = "application/octet-stream";
+    let fileSize = 0;
+    let taskId: string | null = null;
+    try {
+      const formData = await req.formData();
+      const file = formData.get("file") as File | null;
+      taskId = formData.get("taskId") as string | null;
+      if (file) { fileName = file.name; fileMime = file.type; fileSize = file.size; }
+    } catch { /* ignore parse errors in demo mode */ }
+    const demoFile = {
+      id: `demo-file-${Date.now()}`,
+      taskId,
+      name: fileName,
+      mimeType: fileMime,
+      size: fileSize,
+      googleDriveId: "demo",
+      url: "https://drive.google.com",
+      thumbnailUrl: null,
+      createdAt: new Date(),
+    };
+    return NextResponse.json({ data: demoFile }, { status: 201 });
   }
 
   const formData = await req.formData();
@@ -51,7 +72,8 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(req.url);
+    return NextResponse.json({ data: { id: searchParams.get("id") } });
   }
 
   const { searchParams } = new URL(req.url);

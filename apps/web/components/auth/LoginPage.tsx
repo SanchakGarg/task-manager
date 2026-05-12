@@ -1,11 +1,13 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Zap, ArrowRight } from "lucide-react";
+import { Zap, ArrowRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function LoginPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-nb-bg flex items-center justify-center p-4">
       {/* Background pattern */}
@@ -50,6 +52,22 @@ export function LoginPage() {
             </svg>
             Continue with Google
             <ArrowRight size={18} />
+          </Button>
+
+          <div className="relative my-5 flex items-center gap-3">
+            <div className="flex-1 h-px bg-nb-border opacity-20" />
+            <span className="text-xs font-bold text-muted-foreground">OR</span>
+            <div className="flex-1 h-px bg-nb-border opacity-20" />
+          </div>
+
+          <Button
+            size="lg"
+            variant="accent"
+            className="w-full gap-3 text-base"
+            onClick={() => router.push("/dashboard")}
+          >
+            <Play size={18} />
+            Try Demo — No Login Needed
           </Button>
 
           <p className="text-center text-xs text-muted-foreground mt-6 font-medium">

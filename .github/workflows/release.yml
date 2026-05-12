@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  build-desktop:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: --target universal-apple-darwin
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - platform: ubuntu-22.04
+            args: ''
+            rust-targets: ''
+          - platform: windows-latest
+            args: ''
+            rust-targets: ''
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+
+      - name: Install Linux system deps
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Install JS dependencies
+        run: bun install
+
+      - name: Set production URL in Tauri config
+        shell: bash
+        run: |
+          APP_URL="${{ vars.APP_URL || 'https://taskflow.vercel.app' }}"
+          CONFIG=apps/desktop/src-tauri/tauri.conf.json
+          python3 - <<EOF
+          import json, sys
+          with open("$CONFIG") as f:
+              d = json.load(f)
+          d["build"]["frontendDist"] = "$APP_URL"
+          d["build"]["devUrl"] = "$APP_URL"
+          with open("$CONFIG", "w") as f:
+              json.dump(d, f, indent=2)
+          print(f"Set production URL to $APP_URL")
+          EOF
+
+      - name: Build and release Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name || inputs.tag }}
+          releaseName: TaskFlow ${{ github.ref_name || inputs.tag }}
+          releaseBody: |
+            ## TaskFlow Desktop ${{ github.ref_name || inputs.tag }}
+
+            Download the installer for your platform:
+
+            | Platform | Installer |
+            |----------|-----------|
+            | Windows  | `.msi` (recommended) or `.exe` (NSIS) |
+            | macOS    | `.dmg` (Universal — Apple Silicon + Intel) |
+            | Linux    | `.AppImage` (portable) or `.deb` |
+
+            ### Mobile
+            Android APK is attached to this release.
+            iOS: coming soon via App Store.
+
+            ---
+            Full changelog: https://github.com/${{ github.repository }}/commits/${{ github.ref_name || inputs.tag }}
+          releaseDraft: false
+          prerelease: false
+          projectPath: apps/desktop
+          tauriScript: bunx tauri
+          args: ${{ matrix.args }}
+
+  build-android:
+    runs-on: ubuntu-latest
+    needs: []
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Expo / EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install JS dependencies
+        run: bun install
+
+      - name: Build Android APK
+        working-directory: apps/mobile
+        run: eas build --platform android --profile preview --non-interactive --output ./taskflow-android.apk
+
+      - name: Attach APK to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || inputs.tag }}
+          files: apps/mobile/taskflow-android.apk
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

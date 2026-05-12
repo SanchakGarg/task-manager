@@ -16,7 +16,7 @@ export function Header({ title, onSearch, onNewTask }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <header className="h-16 flex items-center justify-between px-6 bg-white border-b-2 border-nb-border flex-shrink-0">
+    <header className="h-16 flex items-center justify-between px-6 bg-card border-b-2 border-nb-border dark:border-border flex-shrink-0">
       <h1 className="text-xl font-black tracking-tight">{title}</h1>
 
       <div className="flex items-center gap-3">

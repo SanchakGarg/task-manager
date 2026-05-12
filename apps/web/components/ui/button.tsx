@@ -15,7 +15,7 @@ const buttonVariants = cva(
         accent:
           "bg-nb-accent text-nb-border border-2 border-nb-border rounded-nb shadow-nb hover:shadow-nb-hover hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none",
         outline:
-          "bg-white text-nb-border border-2 border-nb-border rounded-nb shadow-nb-sm hover:bg-muted hover:shadow-nb hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none",
+          "bg-card text-foreground border-2 border-nb-border dark:border-border rounded-nb shadow-nb-sm hover:bg-muted hover:shadow-nb hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none",
         ghost:
           "bg-transparent text-foreground rounded-nb hover:bg-muted border-2 border-transparent hover:border-nb-border",
         destructive:

@@ -9,10 +9,16 @@ const createReminderSchema = z.object({
   message: z.string().optional(),
 });
 
+const DEMO_REMINDERS = [
+  { id: "r1", scheduledAt: new Date(Date.now() + 2 * 3600000), message: "Review wireframes with team", sent: false, taskId: "d1", userId: "demo", createdAt: new Date(), task: { title: "Design the new onboarding flow" } },
+  { id: "r2", scheduledAt: new Date(Date.now() + 30 * 60000), message: "Deploy hotfix before EOD", sent: false, taskId: "d2", userId: "demo", createdAt: new Date(), task: { title: "Fix payment gateway timeout bug" } },
+  { id: "r3", scheduledAt: new Date(Date.now() + 24 * 3600000), message: null, sent: false, taskId: "d3", userId: "demo", createdAt: new Date(), task: { title: "Write Q1 performance report" } },
+];
+
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ data: DEMO_REMINDERS });
   }
 
   const { searchParams } = new URL(req.url);
@@ -34,7 +40,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const body = await req.json();
+    return NextResponse.json({ data: { id: `demo-rem-${Date.now()}`, ...body, sent: false, sentAt: null, createdAt: new Date() } }, { status: 201 });
   }
 
   const body = await req.json();
@@ -68,7 +75,8 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(req.url);
+    return NextResponse.json({ data: { id: searchParams.get("id") } });
   }
 
   const { searchParams } = new URL(req.url);

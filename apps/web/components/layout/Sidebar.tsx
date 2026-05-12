@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard, CheckSquare, Bell, Settings, LogOut,
-  ChevronLeft, ChevronRight, Zap
+  ChevronLeft, ChevronRight, Zap, Download
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ const navItems = [
   { href: "/dashboard/tasks", icon: CheckSquare, label: "All Tasks" },
   { href: "/dashboard/reminders", icon: Bell, label: "Reminders" },
   { href: "/dashboard/settings", icon: Settings, label: "Settings" },
+  { href: "/download", icon: Download, label: "Download Apps" },
 ];
 
 export function Sidebar({ session }: { session: Session }) {
@@ -28,7 +29,7 @@ export function Sidebar({ session }: { session: Session }) {
     <motion.aside
       animate={{ width: collapsed ? 72 : 240 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="flex flex-col bg-white border-r-2 border-nb-border h-full overflow-hidden flex-shrink-0"
+      className="flex flex-col bg-card border-r-2 border-nb-border dark:border-border h-full overflow-hidden flex-shrink-0"
     >
       {/* Logo */}
       <div className="flex items-center gap-3 p-4 border-b-2 border-nb-border h-16">
@@ -126,7 +127,7 @@ export function Sidebar({ session }: { session: Session }) {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-4 top-20 w-8 h-8 bg-white border-2 border-nb-border rounded-full flex items-center justify-center shadow-nb-sm hover:shadow-nb transition-shadow z-10"
+        className="absolute -right-4 top-20 w-8 h-8 bg-card border-2 border-nb-border dark:border-border rounded-full flex items-center justify-center shadow-nb-sm hover:shadow-nb transition-shadow z-10"
       >
         {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
       </button>
